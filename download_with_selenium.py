@@ -17,6 +17,7 @@
 import os
 import json
 import time
+import math
 import logging
 import urllib.request
 import urllib.error
@@ -40,6 +41,8 @@ def get_image_links(main_keyword, supplemented_keywords, link_file_path, num_req
     Returns:
         None
     """
+    print(f"Requested {num_requested} images.")
+
     number_of_scrolls = int(num_requested / 400) + 1 
     # number_of_scrolls * 400 images will be opened in the browser
 
@@ -49,6 +52,7 @@ def get_image_links(main_keyword, supplemented_keywords, link_file_path, num_req
 
         search_query = quote((main_keyword + ' ' + supplemented_keywords[i]).strip())
         url = "https://www.google.com/search?q="+search_query+"&source=lnms&tbm=isch"
+        print(f"Query: {url}")
         driver.get(url)
         for _ in range(number_of_scrolls):
             for __ in range(10):
@@ -89,7 +93,8 @@ def get_image_links(main_keyword, supplemented_keywords, link_file_path, num_req
                 if url.startswith('http') and not url.startswith('https://encrypted-tbn0.gstatic.com'):
                     img_urls.add(url)
                     num_found += 1
-                    print("Found image url: " + url)
+                    num_found_leading = str(num_found).zfill(math.floor(math.log10(num_requested)+1))
+                    print(f"[{num_found_leading}] Found image url: " + url)
 
         print('Process-{0} add keyword {1} , got {2} image urls so far'.format(main_keyword, supplemented_keywords[i], len(img_urls)))
     print('Process-{0} totally get {1} images'.format(main_keyword, len(img_urls)))
@@ -132,7 +137,7 @@ def download_images(link_file_path, download_dir, log_dir):
                 ua = generate_user_agent()
                 headers['User-Agent'] = ua
                 headers['referer'] = ref
-                print('\n{0}\n{1}\n{2}'.format(link.strip(), ref, ua))
+                print(f'\n{link.strip()}\n{ref}\n{ua}')
                 req = urllib.request.Request(link.strip(), headers = headers)
                 response = urllib.request.urlopen(req)
                 data = response.read()
@@ -142,7 +147,7 @@ def download_images(link_file_path, download_dir, log_dir):
                 print('Process-{0} download image {1}/{2}.jpg'.format(main_keyword, main_keyword, count))
                 count += 1
                 if count % 10 == 0:
-                    print('Process-{0} is sleeping'.format(main_keyword))
+                    print('Process-{0} is sleeping...'.format(main_keyword))
                     time.sleep(5)
 
             except urllib.error.URLError as e:
