@@ -249,6 +249,8 @@ if __name__ == "__main__":
     p.join()
     print('Finish getting all image links')
 
+    ###################################
+
     time.sleep(5)
     
     ###################################
