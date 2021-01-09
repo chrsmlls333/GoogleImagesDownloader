@@ -19,6 +19,7 @@ import json
 import time
 import math
 import logging
+import mimetypes
 import urllib.request
 import urllib.error
 from urllib.parse import urlparse, quote
@@ -140,6 +141,11 @@ def download_images(link_file_path, download_dir, log_dir):
                 print(f'\n{link.strip()}\n{ref}\n{ua}')
                 req = urllib.request.Request(link.strip(), headers = headers)
                 response = urllib.request.urlopen(req)
+
+                # TODO possibly replace extension
+                info = response.info()
+                ext = mimetypes.guess_extension(info.get_content_type()) or ".jpg" 
+                
                 data = response.read()
                 file_path = img_dir + '{0}.jpg'.format(count)
                 with open(file_path,'wb') as wf:
