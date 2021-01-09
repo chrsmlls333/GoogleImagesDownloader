@@ -66,8 +66,8 @@ def get_image_links(main_keyword, supplemented_keywords, link_file_path, num_req
         # imges = driver.find_elements_by_xpath('//div[@class="rg_meta"]') # not working anymore
         # imges = driver.find_elements_by_xpath('//div[contains(@class,"rg_meta")]') # not working anymore
         thumbs = driver.find_elements_by_xpath('//a[@class="wXeWr islib nfEiy mM5pbd"]')
+        print("Thumbnails found: " + str(len(thumbs)))
 
-        print(len(thumbs))
         for thumb in thumbs:
             try:
                 thumb.click()
