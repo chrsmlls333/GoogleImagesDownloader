@@ -46,7 +46,8 @@ def get_image_links(main_keyword, supplemented_keywords, link_file_path, num_req
     img_urls = set()
     driver = webdriver.Firefox()
     for i in range(len(supplemented_keywords)):
-        search_query = quote(main_keyword + ' ' + supplemented_keywords[i])
+
+        search_query = quote((main_keyword + ' ' + supplemented_keywords[i]).strip())
         url = "https://www.google.com/search?q="+search_query+"&source=lnms&tbm=isch"
         driver.get(url)
         for _ in range(number_of_scrolls):
