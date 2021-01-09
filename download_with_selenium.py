@@ -218,6 +218,8 @@ if __name__ == "__main__":
     p.close()
     p.join()
     print('Finish getting all image links')
+
+    time.sleep(5)
     
     ###################################
     # download images with link file
