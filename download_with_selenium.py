@@ -155,7 +155,7 @@ def download_images(link_file_path, download_dir, log_dir):
                 continue
             except Exception as e:
                 print('Unexpected Error')
-                logging.error('Unexpeted error while downloading image {0}error type:{1}, args:{2}'.format(link, type(e), e.args))
+                logging.error('Unexpected error while downloading image {0}error type:{1}, args:{2}'.format(link, type(e), e.args))
                 continue
 
 
