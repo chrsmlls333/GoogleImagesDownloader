@@ -68,7 +68,11 @@ def get_image_links(main_keyword, supplemented_keywords, link_file_path, num_req
         thumbs = driver.find_elements_by_xpath('//a[@class="wXeWr islib nfEiy mM5pbd"]')
         print("Thumbnails found: " + str(len(thumbs)))
 
+        num_found = 0
         for thumb in thumbs:
+            if num_found == num_requested:
+                break
+
             try:
                 thumb.click()
                 time.sleep(1)
@@ -84,6 +88,7 @@ def get_image_links(main_keyword, supplemented_keywords, link_file_path, num_req
 
                 if url.startswith('http') and not url.startswith('https://encrypted-tbn0.gstatic.com'):
                     img_urls.add(url)
+                    num_found += 1
                     print("Found image url: " + url)
 
         print('Process-{0} add keyword {1} , got {2} image urls so far'.format(main_keyword, supplemented_keywords[i], len(img_urls)))
