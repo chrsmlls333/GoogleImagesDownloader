@@ -37,14 +37,29 @@ def get_image_links(main_keyword, supplemented_keywords, link_file_path, num_req
         main_keyword (str): main keyword
         supplemented_keywords (list[str]): list of supplemented keywords
         link_file_path (str): path of the file to store the links
-        num_requested (int, optional): maximum number of images to download
+        num_requested (int or list[int]{2}, optional): maximum number of images to download
     
     Returns:
         None
     """
-    print(f"Requested {num_requested} images.")
 
-    number_of_scrolls = int(num_requested / 400) + 1 
+    index_start = index_end = 0
+    if type(num_requested) is not list and type(num_requested) is not int:
+        raise TypeError("get_image_links: 4th arg must be of type int or list!")
+    if type(num_requested) is list: 
+        if len(num_requested) != 2:
+            raise ValueError("get_image_links: 4th arg must be of a length of 2 if list!")
+        index_start, index_end = num_requested
+        num_requested = abs(index_end - index_start) 
+    index_end = index_start + num_requested
+    if index_end <= 0: 
+        raise ValueError("get_image_links: 4th arg cannot be 0. Nothing to get!")
+
+    print(f"Requested {num_requested} images.")
+    if index_start > 0:
+        print(f"Skipping the first {index_start} images.")
+
+    number_of_scrolls = int(index_end / 400) + 1 
     # number_of_scrolls * 400 images will be opened in the browser
 
     img_urls = set()
@@ -74,9 +89,11 @@ def get_image_links(main_keyword, supplemented_keywords, link_file_path, num_req
         print("Thumbnails found: " + str(len(thumbs)))
 
         num_found = 0
-        for thumb in thumbs:
-            if num_found == num_requested:
-                break
+        for index, thumb in enumerate(thumbs):
+            if (index < index_start): 
+                continue 
+            if num_found >= num_requested: 
+                break 
 
             try:
                 thumb.click()
@@ -93,6 +110,7 @@ def get_image_links(main_keyword, supplemented_keywords, link_file_path, num_req
 
                 if url.startswith('http') and not url.startswith('https://encrypted-tbn0.gstatic.com'):
                     img_urls.add(url)
+
                     num_found += 1
                     num_found_leading = str(num_found).zfill(math.floor(math.log10(num_requested)+1))
                     print(f"[{num_found_leading}] Found image url: " + url)
