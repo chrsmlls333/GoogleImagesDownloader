@@ -4,7 +4,7 @@ This repository can download images from google with specified keywords
 
 ## Requirements
 
-- python 3.5
+- python 3.6
 - selenium 3.6.0
 - Firefox
 - geckodriver
