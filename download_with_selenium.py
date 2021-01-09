@@ -142,13 +142,12 @@ def download_images(link_file_path, download_dir, log_dir):
     log_file = log_dir + 'download_selenium_{0}.log'.format(main_keyword)
     logging.basicConfig(level=logging.DEBUG, filename=log_file, filemode="a+", format="%(asctime)-15s %(levelname)-8s  %(message)s")
     img_dir = download_dir + main_keyword + '/'
-    count = 0
     headers = {}
     if not os.path.exists(img_dir):
         os.makedirs(img_dir)
     # start to download images
     with open(link_file_path, 'r') as rf:
-        for link in rf:
+        for index, link in enumerate(rf):
             try:
                 o = urlparse(link)
                 ref = o.scheme + '://' + o.hostname
@@ -165,12 +164,14 @@ def download_images(link_file_path, download_dir, log_dir):
                 ext = mimetypes.guess_extension(info.get_content_type()) or ".jpg" 
                 
                 data = response.read()
-                file_path = img_dir + '{0}.jpg'.format(count)
+                file_name = f'{index+1}_{os.path.basename(o.path)}'.strip()
+                file_path = img_dir + file_name
                 with open(file_path,'wb') as wf:
                     wf.write(data)
-                print('Process-{0} download image {1}/{2}.jpg'.format(main_keyword, main_keyword, count))
-                count += 1
-                if count % 10 == 0:
+                print(f'Process-{main_keyword}: download image "{file_name}"')
+
+                # Breathe
+                if (index+1) % 10 == 0:
                     print('Process-{0} is sleeping...'.format(main_keyword))
                     time.sleep(5)
 
