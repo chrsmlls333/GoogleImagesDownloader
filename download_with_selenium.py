@@ -217,7 +217,7 @@ if __name__ == "__main__":
         p.apply_async(get_image_links, args=(keyword, supplemented_keywords, link_files_dir + keyword))
     p.close()
     p.join()
-    print('Fininsh getting all image links')
+    print('Finish getting all image links')
     
     ###################################
     # download images with link file
