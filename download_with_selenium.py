@@ -205,6 +205,11 @@ def download_images(link_file_path, download_dir, log_dir):
                 print('\nProcess-{0} is sleeping...'.format(main_keyword))
                 time.sleep(5)
 
+def get_extensions_for_type(general_type):
+    for ext in mimetypes.types_map:
+        if mimetypes.types_map[ext].split('/')[0] == general_type:
+            yield ext
+
 if __name__ == "__main__":
     main_keywords = ['neutral', 'angry', 'surprise', 'disgust', 'fear', 'happy', 'sad']
 
