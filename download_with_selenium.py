@@ -116,7 +116,7 @@ def get_image_links(main_keyword, supplemented_keywords, link_file_path, num_req
                     img_urls.add(url)
 
                     num_found += 1
-                    num_found_leading = str(num_found).zfill(math.floor(math.log10(num_requested)+1))
+                    num_found_leading = str(num_found).zfill(math.floor(math.log10(len(thumbs))+1))
                     print(f"[{num_found_leading}] Found image url: " + url)
 
         print('Process-{0} add keyword {1} , got {2} image urls so far'.format(main_keyword, supplemented_keywords[i], len(img_urls)))
