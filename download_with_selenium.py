@@ -34,7 +34,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
 
-def get_image_links(main_keyword, supplemented_keywords, link_file_path, num_requested = 1000):
+def get_image_links(main_keyword, supplemented_keywords, link_file_path, num_requested = [0, 1000]):
     """get image links with selenium
     
     Args:
