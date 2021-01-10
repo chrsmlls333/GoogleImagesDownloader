@@ -20,10 +20,13 @@ import json
 import time
 import math
 import logging
-import mimetypes
+
 import urllib.request
 import urllib.error
 from urllib.parse import urlparse, quote
+
+import mimetypes
+mimetypes.init()
 
 from multiprocessing import Pool
 from user_agent import generate_user_agent
