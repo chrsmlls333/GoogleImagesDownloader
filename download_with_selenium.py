@@ -187,11 +187,6 @@ def download_images(link_file_path, download_dir, log_dir):
                     wf.write(data)
                 print(f'Process-{main_keyword}: download image "{file_name}"')
 
-                # Breathe
-                if (index+1) % 10 == 0:
-                    print('Process-{0} is sleeping...'.format(main_keyword))
-                    time.sleep(5)
-
             except urllib.error.URLError as e:
                 print('URLError')
                 logging.error('URLError while downloading image {0}reason:{1}'.format(link, e.reason))
@@ -205,6 +200,10 @@ def download_images(link_file_path, download_dir, log_dir):
                 logging.error('Unexpected error while downloading image {0}error type:{1}, args:{2}'.format(link, type(e), e.args))
                 continue
 
+            # Breathe
+            if (index+1) % 10 == 0:
+                print('\nProcess-{0} is sleeping...'.format(main_keyword))
+                time.sleep(5)
 
 if __name__ == "__main__":
     main_keywords = ['neutral', 'angry', 'surprise', 'disgust', 'fear', 'happy', 'sad']
