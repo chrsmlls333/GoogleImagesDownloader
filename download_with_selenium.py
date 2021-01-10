@@ -152,6 +152,9 @@ def download_images(link_file_path, download_dir, log_dir):
     # start to download images
     with open(link_file_path, 'r') as rf:
         for index, link in enumerate(rf):
+            link = link.strip()
+            print('\n' + link)
+
             try:
                 o = urlparse(link)
                 ref = o.scheme + '://' + o.hostname
@@ -159,8 +162,8 @@ def download_images(link_file_path, download_dir, log_dir):
                 ua = generate_user_agent()
                 headers['User-Agent'] = ua
                 headers['referer'] = ref
-                print(f'\n{link.strip()}\n{ref}\n{ua}')
-                req = urllib.request.Request(link.strip(), headers = headers)
+                # print(f'\n{link}\n{ref}\n{ua}')
+                req = urllib.request.Request(link, headers = headers)
                 response = urllib.request.urlopen(req)
 
                 # TODO possibly replace extension
