@@ -165,14 +165,24 @@ def download_images(link_file_path, download_dir, log_dir):
                 # print(f'\n{link}\n{ref}\n{ua}')
                 req = urllib.request.Request(link, headers = headers)
                 response = urllib.request.urlopen(req)
-
-                # TODO possibly replace extension
                 info = response.info()
-                ext = mimetypes.guess_extension(info.get_content_type()) or ".jpg" 
-                
                 data = response.read()
-                file_name = f'{index+1}_{os.path.basename(o.path)}'.strip()
+
+                file_name_orig = (os.path.basename(o.path))
+                file_name_orig_root, file_name_orig_ext = os.path.splitext(file_name_orig)
+                img_exts = tuple(get_extensions_for_type('image'))
+                ext_suggest = mimetypes.guess_extension(info.get_content_type())
+                if file_name_orig_ext.strip() and file_name_orig_ext.lower() in img_exts:
+                    file_name = file_name_orig
+                else:
+                    if not ext_suggest.strip():
+                        raise Exception("Found and guessed extensions not adequate... not an image?")
+                    file_name = file_name_orig_root + ext_suggest
+                    print(f"{file_name_orig_ext} -> {ext_suggest}")
+                
+                file_name = f'{index+1}_{file_name}'
                 file_path = img_dir + file_name
+
                 with open(file_path,'wb') as wf:
                     wf.write(data)
                 print(f'Process-{main_keyword}: download image "{file_name}"')
