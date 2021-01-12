@@ -43,7 +43,7 @@ def process_google_url(url, index_start = 0, index_end = 1000):
         index_end (int):
     
     Returns:
-        img_urls (set[str]): a deduped set of image urls
+        set[str]: a deduped set of image urls
     """
     # Check url for googliness
     pass
@@ -201,7 +201,7 @@ def download_link_list_file(link_file_path, download_dir, log_dir):
     with open(link_file_path, 'r') as rf:
         for index, link in enumerate(rf):
             link = link.strip()
-            
+
             print(' ')
             success = download_image_link(link, img_dir, f'{index+1}_')
             if not success:
