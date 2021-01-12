@@ -122,7 +122,7 @@ def process_google_url(url, index_start = 0, index_end = 1000):
 
 
 def write_url_list(path, text_set):
-    """write list of strings to fle as lines
+    """write list of strings to file as lines
     
     Args:
         path (str): local file url
