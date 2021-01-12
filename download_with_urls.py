@@ -15,8 +15,6 @@
 
 import os
 import time
-import re
-import pathvalidate
 from multiprocessing import Pool
 
 from googleimagesdownloader.processes import get_image_links_from_raw_url, download_link_list_file
