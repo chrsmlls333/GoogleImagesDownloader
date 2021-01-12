@@ -15,47 +15,18 @@
 
 import os
 import time
+import re
+import pathvalidate
 from multiprocessing import Pool
 
-from googleimagesdownloader.processes import get_image_links_from_keywords, download_link_list_file
+from googleimagesdownloader.processes import get_image_links_from_raw_url, download_link_list_file
+from googleimagesdownloader.utils import get_query_from_google_url
 
 
 if __name__ == "__main__":
-    main_keywords = ['floorplans']
-
-    supplemented_keywords = ['', 'b+w', 'mies van der rohe']
-    # supplemented_keywords = ['facial expression',\
-    #             'human face',\
-    #             'face',\
-    #             'old face',\
-    #             'young face',\
-    #             'adult face',\
-    #             'child face',\
-    #             'woman face',\
-    #             'man face',\
-    #             'male face',\
-    #             'female face',\
-    #             'gentleman face',\
-    #             'lady face',\
-    #             'boy face',\
-    #             'girl face',\
-    #             'American face',\
-    #             'Chinese face',\
-    #             'Korean face',\
-    #             'Japanese face',\
-    #             'actor face',\
-    #             'actress face'\
-    #             'doctor face',\
-    #             'movie face'
-    #             ]
-
-    # test for chinese
-    # main_keywords = ['高兴', '悲伤', '惊讶']
-    # supplemented_keywords = ['人脸']
-
-    # test for japanese
-    # main_keywords = ['喜びます', 'きょうがいする', '悲しみ']
-    # supplemented_keywords = ['顔つき']
+    urls = [
+        'https://www.google.com/search?q=site:www.archdaily.com&tbm=isch&hl=en&tbs=rimg:CY6BaeP57DUSYQS4KfegE227&sa=X&ved=0CAIQrnZqFwoTCJjl0_C8le4CFQAAAAAdAAAAABAT&biw=1903&bih=947',
+        ]
 
     download_dir = './data/'
     link_files_dir = './data/link_files/'
@@ -75,8 +46,11 @@ if __name__ == "__main__":
 
     # multiple processes
     p = Pool(3) # default number of process is the number of cores of your CPU, change it by yourself
-    for keyword in main_keywords:
-        p.apply_async(get_image_links_from_keywords, args=(keyword, supplemented_keywords, link_files_dir + keyword, 10))
+    for url in urls:
+        label = get_query_from_google_url(url)
+        if not label:
+            continue
+        p.apply_async(get_image_links_from_raw_url, args=(url, link_files_dir + label, 10))
     p.close()
     p.join()
     print('Finish getting all image links')
@@ -95,8 +69,11 @@ if __name__ == "__main__":
     
     # multiple processes
     p = Pool() # default number of process is the number of cores of your CPU, change it by yourself
-    for keyword in main_keywords:
-        p.apply_async(download_link_list_file, args=(link_files_dir + keyword, download_dir, log_dir))
+    for url in urls:
+        label = get_query_from_google_url(url)
+        if not label:
+            continue
+        p.apply_async(download_link_list_file, args=(link_files_dir + label, download_dir, log_dir))
     p.close()
     p.join()
     print('Finish downloading all images')
