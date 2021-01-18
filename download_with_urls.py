@@ -20,11 +20,11 @@ from multiprocessing import Pool
 from googleimagesdownloader.processes import get_image_links_from_raw_url, download_link_list_file
 from googleimagesdownloader.utils import get_query_from_google_url
 
-
-if __name__ == "__main__":
+def main():
     urls = [
         'https://www.google.com/search?q=site:www.archdaily.com&tbm=isch&hl=en&tbs=rimg:CY6BaeP57DUSYQS4KfegE227&sa=X&ved=0CAIQrnZqFwoTCJjl0_C8le4CFQAAAAAdAAAAABAT&biw=1903&bih=947',
         ]
+    count = 1000
 
     download_dir = './data/'
     link_files_dir = './data/link_files/'
@@ -48,7 +48,7 @@ if __name__ == "__main__":
         label = get_query_from_google_url(url)
         if not label:
             continue
-        p.apply_async(get_image_links_from_raw_url, args=(url, link_files_dir + label, 10))
+        p.apply_async(get_image_links_from_raw_url, args=(url, link_files_dir + label, count))
     p.close()
     p.join()
     print('Finish getting all image links')
@@ -75,3 +75,7 @@ if __name__ == "__main__":
     p.close()
     p.join()
     print('Finish downloading all images')
+
+
+if __name__ == "__main__":
+    main()

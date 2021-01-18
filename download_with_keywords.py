@@ -22,7 +22,9 @@ from multiprocessing import Pool
 from googleimagesdownloader.processes import get_image_links_from_keywords, download_link_list_file
 
 
-if __name__ == "__main__":
+def main():
+    count = 100
+
     main_keywords = ['floorplans']
 
     supplemented_keywords = ['', 'b+w', 'mies van der rohe']
@@ -78,7 +80,7 @@ if __name__ == "__main__":
     # multiple processes
     p = Pool(3) # default number of process is the number of cores of your CPU, change it by yourself
     for keyword in main_keywords:
-        p.apply_async(get_image_links_from_keywords, args=(keyword, supplemented_keywords, link_files_dir + keyword, 10))
+        p.apply_async(get_image_links_from_keywords, args=(keyword, supplemented_keywords, link_files_dir + keyword, count))
     p.close()
     p.join()
     print('Finish getting all image links')
@@ -102,3 +104,6 @@ if __name__ == "__main__":
     p.close()
     p.join()
     print('Finish downloading all images')
+
+if __name__ == "__main__":
+    main()
