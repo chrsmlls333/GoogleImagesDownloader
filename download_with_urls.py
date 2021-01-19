@@ -15,7 +15,7 @@
 
 import os
 import time
-from multiprocessing import Pool
+# from multiprocessing import Pool
 
 from googleimagesdownloader.processes import get_image_links_from_raw_url, download_link_list_file
 from googleimagesdownloader.utils import get_query_from_google_url
@@ -31,6 +31,7 @@ config = {
 }
 
 def main():
+    # Establish directories
     for d in [
         config['download_dir'], 
         config['link_files_dir'], 
@@ -43,20 +44,22 @@ def main():
     # get image links and store in file
     ###################################
     # single process
-    # for keyword in main_keywords:
-    #     link_file_path = link_files_dir + keyword
-    #     get_image_links(keyword, supplemented_keywords, link_file_path)
-    
-
-    # multiple processes
-    p = Pool(3) # default number of process is the number of cores of your CPU, change it by yourself
     for url in config['urls']:
         label = get_query_from_google_url(url)
         if not label:
             continue
-        p.apply_async(get_image_links_from_raw_url, args=(url, config['link_files_dir'] + label, config['count']))
-    p.close()
-    p.join()
+        get_image_links_from_raw_url(url, config['link_files_dir'] + label, config['count'])
+    
+
+    # multiple processes
+    # p = Pool(3) # default number of process is the number of cores of your CPU, change it by yourself
+    # for url in config['urls']:
+    #     label = get_query_from_google_url(url)
+    #     if not label:
+    #         continue
+    #     p.apply_async(get_image_links_from_raw_url, args=(url, config['link_files_dir'] + label, config['count']))
+    # p.close()
+    # p.join()
     print('Finish getting all image links')
 
     ###################################
@@ -67,19 +70,21 @@ def main():
     # download images with link file
     ###################################
     # single process
-    # for keyword in main_keywords:
-    #     link_file_path = link_files_dir + keyword
-    #     download_images(link_file_path, download_dir)
-    
-    # multiple processes
-    p = Pool() # default number of process is the number of cores of your CPU, change it by yourself
     for url in config['urls']:
         label = get_query_from_google_url(url)
         if not label:
             continue
-        p.apply_async(download_link_list_file, args=(config['link_files_dir'] + label, config['download_dir'], config['log_dir']))
-    p.close()
-    p.join()
+        download_link_list_file(config['link_files_dir'] + label, config['download_dir'], config['log_dir'])
+    
+    # multiple processes
+    # p = Pool() # default number of process is the number of cores of your CPU, change it by yourself
+    # for url in config['urls']:
+    #     label = get_query_from_google_url(url)
+    #     if not label:
+    #         continue
+    #     p.apply_async(download_link_list_file, args=(config['link_files_dir'] + label, config['download_dir'], config['log_dir']))
+    # p.close()
+    # p.join()
     print('Finish downloading all images')
 
 
