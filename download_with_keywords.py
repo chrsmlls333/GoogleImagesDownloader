@@ -21,6 +21,8 @@ from multiprocessing import Pool
 
 from googleimagesdownloader.processes import get_image_links_from_keywords, download_link_list_file
 
+from googleimagesdownloader.config import establish_operating_dirs
+
 config = {
     "download_dir": './data/',
     "link_files_dir": './data/link_files/',
@@ -65,13 +67,6 @@ config = {
 
 def main():
 
-    download_dir = './data/'
-    link_files_dir = './data/link_files/'
-    log_dir = './logs/'
-    for d in [download_dir, link_files_dir, log_dir]:
-        if not os.path.exists(d):
-            os.makedirs(d)
-
     ###################################
     # get image links and store in file
     ###################################
@@ -110,4 +105,5 @@ def main():
     print('Finish downloading all images')
 
 if __name__ == "__main__":
+    establish_operating_dirs(config)
     main()
