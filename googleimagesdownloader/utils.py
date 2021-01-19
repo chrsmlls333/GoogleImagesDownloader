@@ -1,5 +1,7 @@
 
 import os
+import time
+import datetime
 import math
 import re
 import pathvalidate
@@ -21,13 +23,6 @@ def get_extensions_for_type(general_type):
             yield ext
 
 
-def get_query_from_google_url(url):
-    query = re.findall('[?&]q=([^&]+)', url)
-    if not query:
-        return None
-    return pathvalidate.sanitize_filename(query[0], replacement_text='_')
-
-
 def validate_url(url):
     try:
         result = urlparse(url)
@@ -36,10 +31,32 @@ def validate_url(url):
         return False
 
 
+def get_query_from_google_url(url):
+    query = re.findall('[?&]q=([^&]+)', url)
+    if not query:
+        return None
+    return pathvalidate.sanitize_filename(query[0], replacement_text='')
+
+
 def get_shortcode_id(s):
     assert isinstance(s, str), "get_shortcode_id: must be provided a string."
     return hashlib.sha1(s.encode('utf-8')).hexdigest()[0:7]
 
+
+def get_timestamp_str():
+    now = datetime.datetime.now()
+    return now.strftime("%y%m%d%H%M%S")
+
+
+def generate_job_id(url):
+    query = get_query_from_google_url(url)
+    query = 'untitled' if query is None else query
+    scode = get_shortcode_id(url)
+    times = get_timestamp_str()
+    id = f"{times}_{query}_{scode}"
+    id = id.replace(' ', '-')
+    id = pathvalidate.sanitize_filename(id)
+    return id
 
 # FILE OPERATIONS ############################################
 
