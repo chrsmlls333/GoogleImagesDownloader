@@ -11,6 +11,8 @@ from urllib.parse import urlparse, quote
 import mimetypes
 mimetypes.init()
 
+import pathvalidate
+
 from user_agent import generate_user_agent
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -116,10 +118,14 @@ def write_url_list(path, text_set):
     Returns:
         None
     """
-    # TODO check path
-    # TODO check tuple/set/list/dict
-    # TODO Make directory
-    # Write
+    assert isinstance(text_set, (tuple, list, set)), "text_set is not an iterable."
+    assert isinstance(path, str), "path is not a string." 
+
+    path = pathvalidate.sanitize_filepath(path, platform='universal')
+
+    directory = os.path.dirname(path)
+    if not os.path.exists(directory):
+        os.makedirs(directory)
     with open(path, 'w') as wf:
         for s in text_set:
             wf.write(s +'\n')
