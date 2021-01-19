@@ -147,34 +147,7 @@ def get_image_links_from_keywords(main_keyword, supplemented_keywords, link_file
     print('Store all the links in file {0}'.format(link_file_path))
 
 
-def get_image_links_from_raw_url(url, link_file_path, num_requested = 1000, num_skip = 0):
-    """get image links with selenium
-    
-    Args:
-        url (str): main path to image gallery
-        link_file_path (str): path of the file to store the links
-        num_requested (int, optional): maximum number of images to download
-        num_skip (int, optional): first batch to skip
-    
-    Returns:
-        None
-    """
 
-    # TODO typecheck args
-
-    index_start = num_skip
-    index_end = num_skip + num_requested
-
-    print(f"Requested {num_requested} images.")
-    if index_start > 0:
-        print(f"Skipping the first {index_start} images.")
-
-    img_urls = process_google_url(url, index_start, index_end)
-
-    print(f'get_image_links_from_raw_url({url}) found {len(img_urls)} images total.')
-
-    write_url_list(link_file_path, img_urls)
-    print('Store all the links in file {link_file_path}')
 
 
 def download_link_list_file(link_file_path, download_dir, log_dir):
@@ -210,6 +183,36 @@ def download_link_list_file(link_file_path, download_dir, log_dir):
             if (index+1) % 10 == 0:
                 print('\nProcess-{0} is sleeping...'.format(main_keyword))
                 time.sleep(5)
+
+def download_link_list(link_list, download_dir):
+    """download images from a list or set of links
+    
+    Args:
+        link_file_path (list[str]): path of file containing links of images
+        download_dir (str): directory to store the downloaded images
+        log_dir (str):
+    
+    Returns:
+        None
+    """
+
+    print(f'download_link_list: {len(link_list)} links')
+    if not os.path.exists(download_dir):
+        os.makedirs(download_dir)
+
+    # start to download images
+    for i, link in enumerate(link_list):
+        print(f'\n[{zeropad(i, len(link_list))}]')
+
+        link = link.strip()
+        success = download_image_link(link, download_dir, f'{i+1}_')
+        if not success:
+            continue
+
+        # Breathe
+        if (i+1) % 10 == 0:
+            print('\n{0} is sleeping...'.format("INSERT JOB ID"))
+            time.sleep(5)
 
 def download_image_link(link, dir_path, prefix = ''):
     """Use urllib to download asset
