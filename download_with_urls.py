@@ -21,10 +21,14 @@ from googleimagesdownloader.processes import get_image_links_from_raw_url, downl
 from googleimagesdownloader.utils import get_query_from_google_url
 
 def main():
+    ###################################
+
+    count = 15
     urls = [
         'https://www.google.com/search?q=site:www.archdaily.com&tbm=isch&hl=en&tbs=rimg:CY6BaeP57DUSYQS4KfegE227&sa=X&ved=0CAIQrnZqFwoTCJjl0_C8le4CFQAAAAAdAAAAABAT&biw=1903&bih=947',
         ]
-    count = 1000
+    
+    ###################################
 
     download_dir = './data/'
     link_files_dir = './data/link_files/'

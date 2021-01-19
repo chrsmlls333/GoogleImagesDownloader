@@ -209,7 +209,7 @@ def download_link_list_file(link_file_path, download_dir, log_dir):
     Returns:
         None
     """
-    print('Start downloading with link file {0}..........'.format(link_file_path))
+    print('Start downloading with link file {0}'.format(link_file_path))
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
     main_keyword = link_file_path.split('/')[-1]
