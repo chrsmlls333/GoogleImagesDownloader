@@ -20,6 +20,8 @@ import time
 from googleimagesdownloader.processes import get_image_links_from_raw_url, download_link_list_file
 from googleimagesdownloader.utils import get_query_from_google_url
 
+from googleimagesdownloader.config import establish_operating_dirs
+
 config = {
     "download_dir": './data/',
     "link_files_dir": './data/link_files/',
@@ -31,14 +33,6 @@ config = {
 }
 
 def main():
-    # Establish directories
-    for d in [
-        config['download_dir'], 
-        config['link_files_dir'], 
-        config['log_dir']
-        ]:
-        if not os.path.exists(d):
-            os.makedirs(d)
 
     ###################################
     # get image links and store in file
@@ -89,4 +83,5 @@ def main():
 
 
 if __name__ == "__main__":
+    establish_operating_dirs(config)
     main()
