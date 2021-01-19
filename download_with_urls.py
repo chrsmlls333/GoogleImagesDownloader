@@ -20,20 +20,22 @@ from multiprocessing import Pool
 from googleimagesdownloader.processes import get_image_links_from_raw_url, download_link_list_file
 from googleimagesdownloader.utils import get_query_from_google_url
 
+config = {
+    "download_dir": './data/',
+    "link_files_dir": './data/link_files/',
+    "log_dir": './logs/',
+    "count": 15,
+    "urls": [
+        'https://www.google.com/search?q=site:www.archdaily.com&tbm=isch&hl=en&tbs=rimg:CY6BaeP57DUSYQS4KfegE227&sa=X&ved=0CAIQrnZqFwoTCJjl0_C8le4CFQAAAAAdAAAAABAT#imgrc=Ty9ETuBZ8xcZLM',
+        ],
+}
+
 def main():
-    ###################################
-
-    count = 15
-    urls = [
-        'https://www.google.com/search?q=site:www.archdaily.com&tbm=isch&hl=en&tbs=rimg:CY6BaeP57DUSYQS4KfegE227&sa=X&ved=0CAIQrnZqFwoTCJjl0_C8le4CFQAAAAAdAAAAABAT&biw=1903&bih=947',
-        ]
-    
-    ###################################
-
-    download_dir = './data/'
-    link_files_dir = './data/link_files/'
-    log_dir = './logs/'
-    for d in [download_dir, link_files_dir, log_dir]:
+    for d in [
+        config['download_dir'], 
+        config['link_files_dir'], 
+        config['log_dir']
+        ]:
         if not os.path.exists(d):
             os.makedirs(d)
 
@@ -48,11 +50,11 @@ def main():
 
     # multiple processes
     p = Pool(3) # default number of process is the number of cores of your CPU, change it by yourself
-    for url in urls:
+    for url in config['urls']:
         label = get_query_from_google_url(url)
         if not label:
             continue
-        p.apply_async(get_image_links_from_raw_url, args=(url, link_files_dir + label, count))
+        p.apply_async(get_image_links_from_raw_url, args=(url, config['link_files_dir'] + label, config['count']))
     p.close()
     p.join()
     print('Finish getting all image links')
@@ -71,11 +73,11 @@ def main():
     
     # multiple processes
     p = Pool() # default number of process is the number of cores of your CPU, change it by yourself
-    for url in urls:
+    for url in config['urls']:
         label = get_query_from_google_url(url)
         if not label:
             continue
-        p.apply_async(download_link_list_file, args=(link_files_dir + label, download_dir, log_dir))
+        p.apply_async(download_link_list_file, args=(config['link_files_dir'] + label, config['download_dir'], config['log_dir']))
     p.close()
     p.join()
     print('Finish downloading all images')
