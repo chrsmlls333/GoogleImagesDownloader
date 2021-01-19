@@ -21,14 +21,15 @@ from multiprocessing import Pool
 
 from googleimagesdownloader.processes import get_image_links_from_keywords, download_link_list_file
 
+config = {
+    "download_dir": './data/',
+    "link_files_dir": './data/link_files/',
+    "log_dir": './logs/',
+    "count": 100,
+    "main_keywords": ['floorplans'],
+    "supplemented_keywords": ['', 'b+w', 'mies van der rohe'],
 
-def main():
-    count = 100
-
-    main_keywords = ['floorplans']
-
-    supplemented_keywords = ['', 'b+w', 'mies van der rohe']
-    # supplemented_keywords = ['facial expression',\
+    # "supplemented_keywords": ['facial expression',\
     #             'human face',\
     #             'face',\
     #             'old face',\
@@ -51,15 +52,18 @@ def main():
     #             'actress face'\
     #             'doctor face',\
     #             'movie face'
-    #             ]
+    #             ],
 
     # test for chinese
-    # main_keywords = ['高兴', '悲伤', '惊讶']
-    # supplemented_keywords = ['人脸']
+    # "main_keywords": ['高兴', '悲伤', '惊讶'],
+    # "supplemented_keywords": ['人脸'],
 
     # test for japanese
-    # main_keywords = ['喜びます', 'きょうがいする', '悲しみ']
-    # supplemented_keywords = ['顔つき']
+    # "main_keywords": ['喜びます', 'きょうがいする', '悲しみ'],
+    # "supplemented_keywords": ['顔つき'],
+}
+
+def main():
 
     download_dir = './data/'
     link_files_dir = './data/link_files/'
@@ -72,15 +76,15 @@ def main():
     # get image links and store in file
     ###################################
     # single process
-    # for keyword in main_keywords:
+    # for keyword in config['main_keywords']:
     #     link_file_path = link_files_dir + keyword
-    #     get_image_links(keyword, supplemented_keywords, link_file_path)
+    #     get_image_links_from_keywords(keyword, config['supplemented_keywords'], config['link_files_dir'] + keyword, config['count'])
     
 
     # multiple processes
     p = Pool(3) # default number of process is the number of cores of your CPU, change it by yourself
-    for keyword in main_keywords:
-        p.apply_async(get_image_links_from_keywords, args=(keyword, supplemented_keywords, link_files_dir + keyword, count))
+    for keyword in config['main_keywords']:
+        p.apply_async(get_image_links_from_keywords, args=(keyword, config['supplemented_keywords'], config['link_files_dir'] + keyword, config['count']))
     p.close()
     p.join()
     print('Finish getting all image links')
@@ -93,14 +97,14 @@ def main():
     # download images with link file
     ###################################
     # single process
-    # for keyword in main_keywords:
+    # for keyword in config['main_keywords']:
     #     link_file_path = link_files_dir + keyword
-    #     download_images(link_file_path, download_dir)
+    #     download_link_list_file(config['link_files_dir'] + keyword, config['download_dir'], config['log_dir'])
     
     # multiple processes
     p = Pool() # default number of process is the number of cores of your CPU, change it by yourself
-    for keyword in main_keywords:
-        p.apply_async(download_link_list_file, args=(link_files_dir + keyword, download_dir, log_dir))
+    for keyword in config['main_keywords']:
+        p.apply_async(download_link_list_file, args=(config['link_files_dir'] + keyword, config['download_dir'], config['log_dir']))
     p.close()
     p.join()
     print('Finish downloading all images')
