@@ -12,3 +12,8 @@ def get_query_from_google_url(url):
     if not query:
         return None
     return sanitize_filename(query[0], replacement_text='_')
+
+from hashlib import sha1
+def get_shortcode_id(s):
+    assert isinstance(s, str), "get_shortcode_id: must be provided a string."
+    return sha1(s.encode('utf-8')).hexdigest()[0:7]
