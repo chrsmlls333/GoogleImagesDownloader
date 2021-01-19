@@ -1,5 +1,6 @@
 
 import os
+import math
 import re
 import pathvalidate
 import hashlib
@@ -9,6 +10,10 @@ from urllib.parse import urlparse
 
 
 # STRING / PATH OPS #########################################
+
+def zeropad(num, maximum = 100):
+    return str(num).zfill(math.floor(math.log10(maximum)+1))
+
 
 def get_extensions_for_type(general_type):
     for ext in mimetypes.types_map:

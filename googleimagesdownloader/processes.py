@@ -17,7 +17,7 @@ from user_agent import generate_user_agent
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
-from .utils import get_extensions_for_type, write_url_list
+from .utils import get_extensions_for_type, write_url_list, zeropad
 
 
 
@@ -98,7 +98,7 @@ def process_google_url(url, index_start = 0, index_end = 1000):
                 img_urls.add(url)
 
                 num_found += 1
-                num_found_leading = str(num_found).zfill(math.floor(math.log10(len(thumbs))+1))
+                num_found_leading = zeropad(num_found, len(thumbs))
                 print(f"[{num_found_leading}] Found image url: " + url)
 
     print(f'Found {len(img_urls)} images.')
