@@ -17,7 +17,7 @@ from user_agent import generate_user_agent
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
-from .utils import get_extensions_for_type
+from .utils import get_extensions_for_type, write_url_list
 
 
 
@@ -107,28 +107,6 @@ def process_google_url(url, index_start = 0, index_end = 1000):
     # Return the goods
     return img_urls
 
-
-def write_url_list(path, text_set):
-    """write list of strings to file as lines
-    
-    Args:
-        path (str): local file url
-        text_set (set[str]): list of strings to write
-    
-    Returns:
-        None
-    """
-    assert isinstance(text_set, (tuple, list, set)), "text_set is not an iterable."
-    assert isinstance(path, str), "path is not a string." 
-
-    path = pathvalidate.sanitize_filepath(path, platform='universal')
-
-    directory = os.path.dirname(path)
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-    with open(path, 'w') as wf:
-        for s in text_set:
-            wf.write(s +'\n')
 
 
 def get_image_links_from_keywords(main_keyword, supplemented_keywords, link_file_path, num_requested = 1000, num_skip = 0):

@@ -1,19 +1,51 @@
-from mimetypes import init, types_map
-init()
+
+import os
+import re
+import pathvalidate
+import hashlib
+import mimetypes
+mimetypes.init()
+
+
+# STRING / PATH OPS #########################################
+
 def get_extensions_for_type(general_type):
-    for ext in types_map:
-        if types_map[ext].split('/')[0] == general_type:
+    for ext in mimetypes.types_map:
+        if mimetypes.types_map[ext].split('/')[0] == general_type:
             yield ext
 
-from re import findall
-from pathvalidate import sanitize_filename
 def get_query_from_google_url(url):
-    query = findall('[?&]q=([^&]+)', url)
+    query = re.findall('[?&]q=([^&]+)', url)
     if not query:
         return None
-    return sanitize_filename(query[0], replacement_text='_')
+    return pathvalidate.sanitize_filename(query[0], replacement_text='_')
 
-from hashlib import sha1
+
 def get_shortcode_id(s):
     assert isinstance(s, str), "get_shortcode_id: must be provided a string."
-    return sha1(s.encode('utf-8')).hexdigest()[0:7]
+    return hashlib.sha1(s.encode('utf-8')).hexdigest()[0:7]
+
+
+# FILE OPERATIONS ############################################
+
+def write_url_list(path, text_set):
+    """write list of strings to file as lines
+    
+    Args:
+        path (str): local file url
+        text_set (set[str]): list of strings to write
+    
+    Returns:
+        None
+    """
+    assert isinstance(text_set, (tuple, list, set)), "text_set is not an iterable."
+    assert isinstance(path, str), "path is not a string." 
+
+    path = pathvalidate.sanitize_filepath(path, platform='universal')
+
+    directory = os.path.dirname(path)
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    with open(path, 'w') as wf:
+        for s in text_set:
+            wf.write(s +'\n')
