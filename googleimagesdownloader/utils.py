@@ -100,12 +100,8 @@ def read_url_list(path):
     assert os.path.exists(path), "read_url_list: url list at path doesn't exist."
 
     with open(path) as rf:
-        content = rf.read().splitlines()
-    content = set(content)
-    print(len(content))
+        lines = rf.read().splitlines()
+    urls = [u for u in lines if validate_url(u)]
 
-    content = filter(lambda url: validate_url(url), content)
-    print(len(content))
-
-    return content
+    return urls
     
