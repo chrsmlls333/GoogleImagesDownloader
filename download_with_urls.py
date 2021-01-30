@@ -17,15 +17,14 @@ import os
 import time
 # from multiprocessing import Pool
 
-from googleimagesdownloader.processes import process_google_url, download_link_list
-from googleimagesdownloader.utils import generate_job_id, write_url_list, read_url_list
 from googleimagesdownloader.config import establish_operating_dirs
+from googleimagesdownloader.Job import Job
 
 config = {
     "download_dir": './data/',
     "link_files_dir": './data/link_files/',
     "log_dir": './logs/',
-    "count": 15,
+    "count": 10,
     "skip": 0,
     "pages": [
         'https://www.google.com/search?q=site:www.archdaily.com&tbm=isch&hl=en&tbs=rimg:CY6BaeP57DUSYQS4KfegE227&sa=X&ved=0CAIQrnZqFwoTCJjl0_C8le4CFQAAAAAdAAAAABAT#imgrc=Ty9ETuBZ8xcZLM',
@@ -34,38 +33,17 @@ config = {
 
 def main():
 
+    # initialize all
     jobs = []
-    
-    # single process loop
     for page in config['pages']:
-
-        # Build Job 
-        job = config.copy()
-        job.pop('pages', None)
-        job_id = generate_job_id(page)
-        job_dir = os.path.join(job["download_dir"], job_id, "")
-        job.update({
-            "page": page,
-            "job_id": job_id,
-            "job_dir": job_dir,
-            "links": [],
-        })
-        print(f'Job ID: {job["job_id"]}')
-
-        # Get Image Links
-        num_skip = job.get('skip', 0)
-        num_requested = job.get('count', 100)
-        img_urls = process_google_url(page, num_skip, num_skip + num_requested)
-        if not img_urls:
-            continue
-        job.update({ "links": img_urls })
-
-        # Write Links to File
-        link_file_path = os.path.join(job['job_dir'], "links.txt")
-        write_url_list(link_file_path, img_urls)
-
-        # Save Job
+        job = Job(config)
+        job.set_page_from_url(page)
         jobs.append(job)
+
+    # single process loop
+    for job in jobs:
+        job.scan_page()
+        job.write_links_file()
 
     # multiple processes
     # p = Pool(3) # default number of process is the number of cores of your CPU, change it by yourself
@@ -73,6 +51,7 @@ def main():
     #     p.apply_async(get_image_links_from_raw_url, args=(config, url))
     # p.close()
     # p.join()
+
     print('Finish getting all image links')
 
 
@@ -83,9 +62,7 @@ def main():
 
     # single process
     for job in jobs:
-
-        # Download Images with Link List saved to Job
-        download_link_list(job['links'], job['job_dir'])
+        job.download()
 
         # TODO write job config json to job_dir
     

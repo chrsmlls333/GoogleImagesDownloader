@@ -48,16 +48,6 @@ def get_timestamp_str():
     return now.strftime("%y%m%d%H%M%S")
 
 
-def generate_job_id(url):
-    query = get_query_from_google_url(url)
-    query = 'untitled' if query is None else query
-    scode = get_shortcode_id(url)
-    times = get_timestamp_str()
-    id = f"{times}_{query}_{scode}"
-    id = id.replace(' ', '-')
-    id = pathvalidate.sanitize_filename(id)
-    return id
-
 # FILE OPERATIONS ############################################
 
 def write_url_list(path, text_set):
