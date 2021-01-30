@@ -15,25 +15,30 @@ from .utils import (
 
 
 class Job:
-    def __init__(self, config):
+    def __init__(self, config, index = 0):
         # Ingest global config settings
-        self.config = config.copy()
-        self.config.pop('pages', None)
         # TODO cast config to explicit args
         # TODO validate config
+        self.config = config.copy()
 
         self.url = ""
         self.id = ""
         self.dir = ""
         self.results = []
 
+        pages = self.config.get('pages', [])
+        if len(pages):
+            i = max(0, min(index, len(pages)-1))
+            self.set_page_from_url(pages[i])
+
+        # TODO if len(keywords)....
+
 
     def set_page_from_url(self, url):
         # TODO validate url
         self.url = url
         self.__generate_job_id()
-        self.dir = os.path.join( self.config["download_dir"], self.id, "" )
-        print(self.dir)
+        self.__set_job_dir()
 
 
     def set_page_from_keyword(self, key):
@@ -41,7 +46,7 @@ class Job:
         pass
 
 
-    def scan_page(self):
+    def scan_page(self, write = False):
         if not self.url:
             return
         num_skip = self.config.get('skip', 0)
@@ -50,6 +55,9 @@ class Job:
         if not img_urls:
             return
         self.results = list( set(self.results) | set(img_urls) )
+
+        if write:
+            self.write_links_file()
 
 
     def write_links_file(self):
@@ -78,4 +86,11 @@ class Job:
         self.id = id
         print(f'Job ID: {self.id}')
 
-    
+    def __set_job_dir(self):
+        # TODO check for download_dir key
+        # TODO check for self.id existence
+        self.dir = os.path.join( self.config["download_dir"], self.id, "" )
+        print(f"Output: {self.dir}")
+
+
+
